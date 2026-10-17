@@ -1,0 +1,29 @@
+name: Auto Commit
+
+on:
+  schedule:
+    # Runs 3 times a day (UTC): 03:00, 09:00, 15:00
+    - cron: "0 3,9,15 * * *"
+  workflow_dispatch: # lets you run it manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Update activity log
+        run: |
+          echo "Auto commit: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> activity.log
+
+      - name: Commit and push
+        run: |
+          git config user.name  "mohamedsaif21"
+          git config user.email "mohamedsaifb24@gmail.com"
+          git add activity.log
+          git commit -m "chore: auto update $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
